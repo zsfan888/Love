@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>祝你开心每一天 ❤️</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/mouse_slide.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/clicklove.js"></script>
   <style type="text/css">
     html, body {
       height: 100%;
@@ -64,10 +62,28 @@
       font-weight: bold;
       text-shadow: 0 0 10px rgba(255, 221, 148, 0.5);
     }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
+    }
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff69b4;
+      }
+      to {
+        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff69b4;
+      }
     }
     @media screen and (max-width: 768px) {
       .message {
@@ -75,6 +91,24 @@
       }
       .footer {
         font-size: 2em;
+      }
+    }
+    .heart {
+      position: absolute;
+      color: #ff69b4;
+      font-size: 3em;
+      animation: heartAnimation 1s ease-out forwards;
+    }
+    @keyframes heartAnimation {
+      0% {
+        transform: scale(0);
+      }
+      50% {
+        transform: scale(1.5);
+      }
+      100% {
+        transform: scale(0);
+        opacity: 0;
       }
     }
   </style>
@@ -148,6 +182,21 @@
 
     // 如果自动播放被阻止，监听用户点击页面来播放音乐
     document.body.addEventListener('click', playMusic);
+
+    // 点击页面显示爱心
+    document.body.addEventListener('click', function(event) {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.textContent = '❤️';
+      heart.style.left = `${event.pageX - 20}px`;
+      heart.style.top = `${event.pageY - 20}px`;
+      document.body.appendChild(heart);
+
+      // 移除爱心
+      setTimeout(() => {
+        heart.remove();
+      }, 1000);
+    });
   </script>
 </body>
 </html>
