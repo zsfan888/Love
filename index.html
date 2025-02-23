@@ -17,7 +17,7 @@
       justify-content: center;
       align-items: center;
       overflow: hidden;
-      font-family: 'Arial', sans-serif; /* 设置通用字体 */
+      font-family: 'Arial', sans-serif;
     }
     canvas {
       position: absolute;
@@ -26,15 +26,15 @@
     }
     .namebox {
       color: #fff;
-      font-size: 36px; /* 设置字体大小 */
-      font-weight: bold; /* 加粗 */
-      font-family: 'Arial', sans-serif; /* 设置字体 */
+      font-size: 5vw; /* 使用相对单位，适配屏幕大小 */
+      font-weight: bold;
+      font-family: 'Arial', sans-serif;
       text-align: center;
-      text-shadow: 0 0 10px rgba(255, 48, 197, 0.7), 0 0 20px rgba(255, 48, 197, 0.7), 0 0 30px rgba(255, 48, 197, 0.7); /* 添加多重阴影效果 */
+      text-shadow: 0 0 10px rgba(255, 48, 197, 0.7), 0 0 20px rgba(255, 48, 197, 0.7), 0 0 30px rgba(255, 48, 197, 0.7);
+      white-space: nowrap; /* 保证文本不换行 */
     }
     .namebox h1 {
       margin: 0;
-      white-space: nowrap; /* 保证文本不换行 */
     }
   </style>
 </head>
