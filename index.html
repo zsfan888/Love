@@ -1,269 +1,281 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>爱你每一天</title>
-    <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/mouse_slide.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/clicklove.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>爱你每一天 ❤️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/mouse_slide.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/clicklove.js"></script>
   <style type="text/css">
     html, body {
       height: 100%;
       padding: 0;
       margin: 0;
       background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      font-family: 'Arial', sans-serif;
     }
     canvas {
       position: absolute;
       width: 100%;
       height: 100%;
     }
+    body {
+      font-family: 'Dancing Script', cursive;
+      color: white;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
     .namebox {
       color: #fff;
-      font-size: 5vw; /* 使用相对单位，适配屏幕大小 */
-      font-weight: bold;
-      font-family: 'Arial', sans-serif;
-      text-align: center;
-      text-shadow: 0 0 10px rgba(255, 48, 197, 0.7), 0 0 20px rgba(255, 48, 197, 0.7), 0 0 30px rgba(255, 48, 197, 0.7);
-      white-space: nowrap; /* 保证文本不换行 */
+      position: absolute;   
+      top: 50%;   
+      left: 50%;   
+      transform: translate(-50%, -50%);   
     }
     .namebox h1 {
-      margin: 0;
+      margin: 0 auto;
+    }
+    .message {
+      font-size: 2.2em;
+      margin-top: 10px;
+      text-shadow: 1px 3px 5px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 2.5s ease-in-out;
+    }
+    .highlight {
+      color: #ffdd94;
+      font-weight: bold;
+    }
+    .footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 2.5em;
+      color: rgba(255, 255, 255, 0.8);
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 3s ease-in-out;
+      white-space: nowrap;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
-<canvas id="pinkboard"></canvas>
-<script>
-  var settings = {
-    particles: {
-      length: 500,
-      duration: 2,
-      velocity: 100,
-      effect: -0.75,
-      size: 30,
-    },
-  };
+  <p class="message">
+    从 <time datetime="2025-02-10T14:05:52">2025 年 2 月 10 日 14 时 05 分 52 秒</time> 起，已经经过了 
+    <span class="highlight" id="days">1</span> 天 
+    <span class="highlight" id="hours">1</span> 时 
+    <span class="highlight" id="minutes">0</span> 分
+  </p>
 
-  // 时间计算
-  function getTimeDifference(startDate) {
-    const now = new Date();
-    const diff = now - startDate;  // 毫秒差
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    return { days, hours, minutes };
-  }
+  <p class="footer">
+    <span style="font-family: 'Dancing Script', cursive;">By Zsfan To DaiYuXuan</span>
+  </p>
 
-  // 设置相爱的开始时间
-  const startDate = new Date(2025, 1, 10, 14, 15);  // 2025 年 2 月 10 日 14:15
+  <canvas id="pinkboard"></canvas>
 
-  function updateTime() {
-    const { days, hours, minutes } = getTimeDifference(startDate);
-    const text = `我们已经相爱了 ${days} 天 ${hours} 时 ${minutes} 分`;
-    document.getElementById('loveTime').textContent = text;
-  }
+  <!-- 背景音乐 -->
+  <audio id="backgroundMusic" src="your-music-file.mp3" type="audio/mpeg" loop></audio>
 
-  setInterval(updateTime, 1000);  // 每秒更新一次时间
+  <script>
+    // 设置起始时间
+    const startDate = new Date('2025-02-10T14:05:52');
 
-  // 表情符号切换
-  const emojis = ["❤️", "😍", "🥰", "💖", "😘", "💌"];
-  let emojiIndex = 0;
-  function changeTitleEmoji() {
-    const titleText = "爱你每一天 " + emojis[emojiIndex];
-    document.title = titleText;
-    emojiIndex = (emojiIndex + 1) % emojis.length;
-  }
+    // 更新计时器函数
+    function updateTimer() {
+      const now = new Date();
+      const elapsedTime = now - startDate;
 
-  setInterval(changeTitleEmoji, 1000);  // 每秒更新一次表情
+      // 计算天、时、分
+      const days = Math.floor(elapsedTime / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((elapsedTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
 
-  var Point = (function() {
-    function Point(x, y) {
-      this.x = (typeof x !== 'undefined') ? x : 0;
-      this.y = (typeof y !== 'undefined') ? y : 0;
-    }
-    Point.prototype.clone = function() {
-      return new Point(this.x, this.y);
-    };
-    Point.prototype.length = function(length) {
-      if (typeof length == 'undefined')
-        return Math.sqrt(this.x * this.x + this.y * this.y);
-      this.normalize();
-      this.x *= length;
-      this.y *= length;
-      return this;
-    };
+      // 更新页面内容
+      document.getElementById('days').textContent = days;
+      document.getElementById('hours').textContent = hours;
+      document.getElementById('minutes').textContent = minutes;
 
-    Point.prototype.normalize = function() {
-      var length = this.length();
-      this.x /= length;
-      this.y /= length;
-      return this;
-    };
-    return Point;
-  })();
-
-  var Particle = (function() {
-    function Particle() {
-      this.position = new Point();
-      this.velocity = new Point();
-      this.acceleration = new Point();
-      this.age = 0;
-    }
-    Particle.prototype.initialize = function(x, y, dx, dy) {
-      this.position.x = x;
-      this.position.y = y;
-      this.velocity.x = dx;
-      this.velocity.y = dy;
-      this.acceleration.x = dx * settings.particles.effect;
-      this.acceleration.y = dy * settings.particles.effect;
-      this.age = 0;
-    };
-    Particle.prototype.update = function(deltaTime) {
-      this.position.x += this.velocity.x * deltaTime;
-      this.position.y += this.velocity.y * deltaTime;
-      this.velocity.x += this.acceleration.x * deltaTime;
-      this.velocity.y += this.acceleration.y * deltaTime;
-      this.age += deltaTime;
-    };
-
-    Particle.prototype.draw = function(context, image) {
-      function ease(t) {
-        return (--t) * t * t + 1;
-      }
-      var size = image.width * ease(this.age / settings.particles.duration);
-      context.globalAlpha = 1 - this.age / settings.particles.duration;
-      context.drawImage(image, this.position.x - size / 2, this.position.y - size / 2, size, size);
-    };
-    return Particle;
-  })();
-
-  var ParticlePool = (function() {
-    var particles,
-            firstActive = 0,
-            firstFree = 0,
-            duration = settings.particles.duration;
-    function ParticlePool(length) {
-      particles = new Array(length);
-      for (var i = 0; i < particles.length; i++)
-        particles[i] = new Particle();
-    }
-    ParticlePool.prototype.add = function(x, y, dx, dy) {
-      particles[firstFree].initialize(x, y, dx, dy);
-      firstFree++;
-      if (firstFree == particles.length) firstFree = 0;
-      if (firstActive == firstFree ) firstActive++;
-      if (firstActive == particles.length) firstActive = 0;
-    };
-    ParticlePool.prototype.update = function(deltaTime) {
-      var i;
-      if (firstActive < firstFree) {
-        for (i = firstActive; i < firstFree; i++)
-          particles[i].update(deltaTime);
-      }
-      if (firstFree < firstActive) {
-        for (i = firstActive; i < particles.length; i++)
-          particles[i].update(deltaTime);
-        for (i = 0; i < firstFree; i++)
-          particles[i].update(deltaTime);
-      }
-      while (particles[firstActive].age >= duration && firstActive != firstFree) {
-        firstActive++;
-        if (firstActive == particles.length) firstActive = 0;
-      }
-    };
-    ParticlePool.prototype.draw = function(context, image) {
-      if (firstActive < firstFree) {
-        for (i = firstActive; i < firstFree; i++)
-          particles[i].draw(context, image);
-      }
-      if (firstFree < firstActive) {
-        for (i = firstActive; i < particles.length; i++)
-          particles[i].draw(context, image);
-        for (i = 0; i < firstFree; i++)
-          particles[i].draw(context, image);
-      }
-    };
-    return ParticlePool;
-  })();
-
-  (function(canvas) {
-    var context = canvas.getContext('2d'),
-            particles = new ParticlePool(settings.particles.length),
-            particleRate = settings.particles.length / settings.particles.duration, 
-            time;
-
-    function pointOnHeart(t) {
-      return new Point(
-              160 * Math.pow(Math.sin(t), 3),
-              130 * Math.cos(t) - 50 * Math.cos(2 * t) - 20 * Math.cos(3 * t) - 10 * Math.cos(4 * t) + 25
-      );
+      requestAnimationFrame(updateTimer);
     }
 
-    var image = (function() {
-      var canvas = document.createElement('canvas'),
-              context = canvas.getContext('2d');
-      canvas.width = settings.particles.size;
-      canvas.height = settings.particles.size;
-      function to(t) {
-        var point = pointOnHeart(t);
-        point.x = settings.particles.size / 2 + point.x * settings.particles.size / 350;
-        point.y = settings.particles.size / 2 - point.y * settings.particles.size / 350;
-        return point;
+    // 初始调用计时器
+    updateTimer();
+
+    // 播放音乐
+    function playMusic() {
+      const music = document.getElementById('backgroundMusic');
+      music.play().catch(() => {
+        console.log("自动播放被浏览器阻止，等待用户交互。");
+      });
+    }
+
+    // 尝试自动播放音乐
+    playMusic();
+
+    // 如果自动播放被阻止，监听用户点击页面来播放音乐
+    document.body.addEventListener('click', playMusic);
+
+    var settings = {
+      particles: {
+        length: 500, // maximum amount of particles
+        duration: 2, // particle duration in sec
+        velocity: 100, // particle velocity in pixels/sec
+        effect: -0.75, // play with this for a nice effect
+        size: 30, // particle size in pixels
+      },
+    };
+
+    var Point = (function() {
+      function Point(x, y) {
+        this.x = (typeof x !== 'undefined') ? x : 0;
+        this.y = (typeof y !== 'undefined') ? y : 0;
       }
-      context.beginPath();
-      var t = -Math.PI;
-      var point = to(t);
-      context.moveTo(point.x, point.y);
-      while (t < Math.PI) {
-        t += 0.01; 
-        point = to(t);
-        context.lineTo(point.x, point.y);
-      }
-      context.closePath();
-      context.fillStyle = '#ff30c5';
-      context.fill();
-      var image = new Image();
-      image.src = canvas.toDataURL();
-      return image;
+      Point.prototype.clone = function() {
+        return new Point(this.x, this.y);
+      };
+      Point.prototype.length = function(length) {
+        if (typeof length == 'undefined')
+          return Math.sqrt(this.x * this.x + this.y * this.y);
+        this.normalize();
+        this.x *= length;
+        this.y *= length;
+        return this;
+      };
+
+      Point.prototype.normalize = function() {
+        var length = this.length();
+        this.x /= length;
+        this.y /= length;
+        return this;
+      };
+      return Point;
     })();
 
-    function render() {
-      requestAnimationFrame(render);
-      var newTime = new Date().getTime() / 1000,
-              deltaTime = newTime - (time || newTime);
-      time = newTime;
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      var amount = particleRate * deltaTime;
-      for (var i = 0; i < amount; i++) {
-        var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
-        var dir = pos.clone().length(settings.particles.velocity);
-        particles.add(canvas.width / 2 + pos.x, canvas.height / 2 - pos.y, dir.x, -dir.y);
+    var Particle = (function() {
+      function Particle() {
+        this.position = new Point();
+        this.velocity = new Point();
+        this.acceleration = new Point();
+        this.age = 0;
       }
-      particles.update(deltaTime);
-      particles.draw(context, image);
+      Particle.prototype.initialize = function(x, y, dx, dy) {
+        this.position.x = x;
+        this.position.y = y;
+        this.velocity.x = dx;
+        this.velocity.y = dy;
+        this.acceleration.x = dx * settings.particles.effect;
+        this.acceleration.y = dy * settings.particles.effect;
+        this.age = 0;
+      };
+      Particle.prototype.update = function(deltaTime) {
+        this.position.x += this.velocity.x * deltaTime;
+        this.position.y += this.velocity.y * deltaTime;
+        this.velocity.x += this.acceleration.x * deltaTime;
+        this.velocity.y += this.acceleration.y * deltaTime;
+        this.age += deltaTime;
+      };
+
+      Particle.prototype.draw = function(context, image) {
+        function ease(t) {
+          return (--t) * t * t + 1;
+        }
+        var size = image.width * ease(this.age / settings.particles.duration);
+        context.globalAlpha = 1 - this.age / settings.particles.duration;
+        context.drawImage(image, this.position.x - size / 2, this.position.y - size / 2, size, size);
+      };
+      return Particle;
+    })();
+
+    var ParticlePool = (function() {
+      var particles,
+          firstActive = 0,
+          firstFree = 0,
+          duration = settings.particles.duration;
+      function ParticlePool(length) {
+        particles = new Array(length);
+        for (var i = 0; i < particles.length; i++)
+          particles[i] = new Particle();
+      }
+      ParticlePool.prototype.add = function(x, y, dx, dy) {
+        particles[firstFree].initialize(x, y, dx, dy);
+        firstFree++;
+        if (firstFree == particles.length) firstFree = 0;
+        if (firstActive == firstFree ) firstActive++;
+        if (firstActive == particles.length) firstActive = 0;
+      };
+      ParticlePool.prototype.update = function(deltaTime) {
+        var i;
+        if (firstActive < firstFree) {
+          for (i = firstActive; i < firstFree; i++)
+            particles[i].update(deltaTime);
+        }
+        if (firstFree < firstActive) {
+          for (i = firstActive; i < particles.length; i++)
+            particles[i].update(deltaTime);
+          for (i = 0; i < firstFree; i++)
+            particles[i].update(deltaTime);
+        }
+        while (particles[firstActive].age >= duration && firstActive != firstFree) {
+          firstActive++;
+          if (firstActive == particles.length) firstActive = 0;
+        }
+      };
+      ParticlePool.prototype.draw = function(context, image) {
+        var i;
+        if (firstActive < firstFree) {
+          for (i = firstActive; i < firstFree; i++)
+            particles[i].draw(context, image);
+        }
+        if (firstFree < firstActive) {
+          for (i = firstActive; i < particles.length; i++)
+            particles[i].draw(context, image);
+          for (i = 0; i < firstFree; i++)
+            particles[i].draw(context, image);
+        }
+      };
+      return ParticlePool;
+    })();
+
+    var canvas = document.getElementById('pinkboard');
+    var context = canvas.getContext('2d');
+    var image = new Image();
+    image.src = "your-image-file.png";
+    var pool = new ParticlePool(settings.particles.length);
+    var lastTime = 0;
+    var deltaTime = 0;
+
+    function loop(time) {
+      deltaTime = (time - lastTime) / 1000;
+      lastTime = time;
+      pool.update(deltaTime);
+      pool.draw(context, image);
+      requestAnimationFrame(loop);
     }
 
-    function onResize() {
-      canvas.width = canvas.clientWidth;
-      canvas.height = canvas.clientHeight;
-    }
+    loop(0);
 
-    window.onresize = onResize;
-    setTimeout(function() {
-      onResize();
-      render();
-    }, 10);
-  })(document.getElementById('pinkboard'));
-</script>
-<div class="namebox">
-  <h1 id="loveTime">我们已经相爱了多少天多少时多少分</h1>
-</div>
+    // 动态更改页面标题的表情符号
+    const emojis = ['❤️', '😚', '🥰', '😘', '💖'];
+    let emojiIndex = 0;
+    
+    function changeTitle() {
+      document.title = '爱你每一天 ' + emojis[emojiIndex];
+      emojiIndex = (emojiIndex + 1) % emojis.length;
+    }
+    
+    setInterval(changeTitle, 1000);
+  </script>
 </body>
 </html>
