@@ -187,13 +187,16 @@
         this.age += deltaTime;
       };
 
-      Particle.prototype.draw = function(context, image) {
+      Particle.prototype.draw = function(context) {
         function ease(t) {
           return (--t) * t * t + 1;
         }
-        var size = image.width * ease(this.age / settings.particles.duration);
+        // 使用一个圆点代替粒子图像
+        context.beginPath();
+        context.arc(this.position.x, this.position.y, settings.particles.size * ease(this.age / settings.particles.duration), 0, Math.PI * 2);
+        context.fillStyle = "#ff77cc";
+        context.fill();
         context.globalAlpha = 1 - this.age / settings.particles.duration;
-        context.drawImage(image, this.position.x - size / 2, this.position.y - size / 2, size, size);
       };
       return Particle;
     })();
@@ -232,17 +235,17 @@
           if (firstActive == particles.length) firstActive = 0;
         }
       };
-      ParticlePool.prototype.draw = function(context, image) {
+      ParticlePool.prototype.draw = function(context) {
         var i;
         if (firstActive < firstFree) {
           for (i = firstActive; i < firstFree; i++)
-            particles[i].draw(context, image);
+            particles[i].draw(context);
         }
         if (firstFree < firstActive) {
           for (i = firstActive; i < particles.length; i++)
-            particles[i].draw(context, image);
+            particles[i].draw(context);
           for (i = 0; i < firstFree; i++)
-            particles[i].draw(context, image);
+            particles[i].draw(context);
         }
       };
       return ParticlePool;
@@ -250,8 +253,6 @@
 
     var canvas = document.getElementById('pinkboard');
     var context = canvas.getContext('2d');
-    var image = new Image();
-    image.src = "your-image-file.png";
     var pool = new ParticlePool(settings.particles.length);
     var lastTime = 0;
     var deltaTime = 0;
@@ -260,14 +261,14 @@
       deltaTime = (time - lastTime) / 1000;
       lastTime = time;
       pool.update(deltaTime);
-      pool.draw(context, image);
+      pool.draw(context);
       requestAnimationFrame(loop);
     }
 
     loop(0);
 
     // 动态更改页面标题的表情符号
-    const emojis = ['❤️', '😚', '🥰', '😘', '💖'];
+    const emojis = ['❤️', '😚', '💋', '😘', '💖'];
     let emojiIndex = 0;
     
     function changeTitle() {
