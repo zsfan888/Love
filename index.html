@@ -30,6 +30,16 @@
       position: relative;
       z-index: 10;
     }
+    .namebox {
+      color: #fff;
+      position: absolute;   
+      top: 50%;   
+      left: 50%;   
+      transform: translate(-50%, -50%);   
+    }
+    .namebox h1 {
+      margin: 0 auto;
+    }
     .message {
       font-size: 2.2em;
       margin-top: 10px;
@@ -62,7 +72,8 @@
 </head>
 <body>
   <p class="message">
-    我们相爱了 <span class="highlight" id="days">0</span> 天 
+    我们相爱了 
+    <span class="highlight" id="days">0</span> 天 
     <span class="highlight" id="hours">0</span> 时 
     <span class="highlight" id="minutes">0</span> 分 
     <span class="highlight" id="seconds">0</span> 秒
@@ -81,18 +92,15 @@
     // 设置起始时间为 2025 年 2 月 10 日 14:05:52
     const startDate = new Date('2025-02-10T14:05:52');
 
-    // 更新计时器函数
     function updateTimer() {
       const now = new Date();
       const elapsedTime = now - startDate;
 
-      // 计算天、时、分、秒
       const days = Math.floor(elapsedTime / (1000 * 60 * 60 * 24));
       const hours = Math.floor((elapsedTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
 
-      // 更新页面内容
       document.getElementById('days').textContent = days;
       document.getElementById('hours').textContent = hours;
       document.getElementById('minutes').textContent = minutes;
@@ -101,10 +109,8 @@
       requestAnimationFrame(updateTimer);
     }
 
-    // 初始调用计时器
     updateTimer();
 
-    // 播放音乐
     function playMusic() {
       const music = document.getElementById('backgroundMusic');
       music.play().catch(() => {
@@ -112,78 +118,96 @@
       });
     }
 
-    // 尝试自动播放音乐
     playMusic();
-
-    // 如果自动播放被阻止，监听用户点击页面来播放音乐
     document.body.addEventListener('click', playMusic);
-  </script>
 
-  <script>
-    // 处理爱心飘动特效
-    (function() {
-      var canvas = document.getElementById("pinkboard"),
-          ctx = canvas.getContext("2d"),
-          width = window.innerWidth,
-          height = window.innerHeight,
-          hearts = [];
+    var settings = {
+      particles: {
+        length: 500,
+        duration: 2,
+        velocity: 100,
+        effect: -0.75,
+        size: 30,
+      },
+    };
 
-      canvas.width = width;
-      canvas.height = height;
+    var Point = function(x, y) {
+      this.x = x || 0;
+      this.y = y || 0;
+    };
+    Point.prototype.clone = function() {
+      return new Point(this.x, this.y);
+    };
+    Point.prototype.length = function(length) {
+      if (length === undefined)
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+      this.normalize();
+      this.x *= length;
+      this.y *= length;
+      return this;
+    };
+    Point.prototype.normalize = function() {
+      var length = this.length();
+      this.x /= length;
+      this.y /= length;
+      return this;
+    };
 
-      function Heart(x, y, size, speed) {
-        this.x = x;
-        this.y = y;
-        this.size = size;
-        this.speed = speed;
-        this.alpha = 1;
+    var Particle = function() {
+      this.position = new Point();
+      this.velocity = new Point();
+      this.acceleration = new Point();
+      this.age = 0;
+    };
+    Particle.prototype.initialize = function(x, y, dx, dy) {
+      this.position.x = x;
+      this.position.y = y;
+      this.velocity.x = dx;
+      this.velocity.y = dy;
+      this.acceleration.x = dx * settings.particles.effect;
+      this.acceleration.y = dy * settings.particles.effect;
+      this.age = 0;
+    };
+
+    (function(canvas) {
+      var context = canvas.getContext('2d'),
+          particles = new Array(settings.particles.length),
+          particleRate = settings.particles.length / settings.particles.duration,
+          time;
+
+      function pointOnHeart(t) {
+        return new Point(
+            160 * Math.pow(Math.sin(t), 3),
+            130 * Math.cos(t) - 50 * Math.cos(2 * t) - 20 * Math.cos(3 * t) - 10 * Math.cos(4 * t) + 25
+        );
       }
 
-      Heart.prototype.draw = function() {
-        ctx.globalAlpha = this.alpha;
-        ctx.fillStyle = "#ff69b4";
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.bezierCurveTo(this.x - this.size / 2, this.y - this.size / 1.5, this.x - this.size, this.y + this.size / 3, this.x, this.y + this.size);
-        ctx.bezierCurveTo(this.x + this.size, this.y + this.size / 3, this.x + this.size / 2, this.y - this.size / 1.5, this.x, this.y);
-        ctx.fill();
-      };
-
-      function update() {
-        ctx.clearRect(0, 0, width, height);
-        for (var i = 0; i < hearts.length; i++) {
-          hearts[i].y -= hearts[i].speed;
-          hearts[i].alpha -= 0.01;
-          if (hearts[i].alpha <= 0) {
-            hearts.splice(i, 1);
-            i--;
-          }
+      function render() {
+        requestAnimationFrame(render);
+        var newTime = new Date().getTime() / 1000,
+            deltaTime = newTime - (time || newTime);
+        time = newTime;
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        for (var i = 0; i < particleRate * deltaTime; i++) {
+          var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
+          var dir = pos.clone().length(settings.particles.velocity);
+          context.fillStyle = '#ff30c5';
+          context.beginPath();
+          context.arc(canvas.width / 2 + pos.x, canvas.height / 2 - pos.y, 2, 0, Math.PI * 2);
+          context.fill();
         }
       }
 
-      function draw() {
-        for (var i = 0; i < hearts.length; i++) {
-          hearts[i].draw();
-        }
+      function onResize() {
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
       }
-
-      function loop() {
-        update();
-        draw();
-        requestAnimationFrame(loop);
-      }
-
-      function createHeart(event) {
-        var x = event.clientX;
-        var y = event.clientY;
-        var size = Math.random() * 10 + 10;
-        var speed = Math.random() * 2 + 1;
-        hearts.push(new Heart(x, y, size, speed));
-      }
-
-      document.addEventListener("click", createHeart);
-      loop();
-    })();
+      window.onresize = onResize;
+      setTimeout(function() {
+        onResize();
+        render();
+      }, 10);
+    })(document.getElementById('pinkboard'));
   </script>
 </body>
 </html>
