@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>爱你每一天 ❤️</title>
+  <title>❤️我是凡😁❤️</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/mouse_slide.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/clicklove.js"></script>
@@ -41,7 +42,7 @@
       margin: 0 auto;
     }
     .message {
-      font-size: 2.2em;
+      font-size: 2.2em; /* 增加字体大小 */
       margin-top: 10px;
       text-shadow: 1px 3px 5px rgba(0, 0, 0, 0.5);
       animation: fadeIn 2.5s ease-in-out;
@@ -57,7 +58,6 @@
       color: rgba(255, 255, 255, 0.8);
       text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
       animation: fadeIn 3s ease-in-out;
-      white-space: nowrap;
     }
     @keyframes fadeIn {
       from {
@@ -73,14 +73,15 @@
 </head>
 <body>
   <p class="message">
-    从 <time datetime="2025-02-10T14:05:52">2025 年 2 月 10 日 14 时 05 分 52 秒</time> 起，已经经过了 
-    <span class="highlight" id="days">1</span> 天 
-    <span class="highlight" id="hours">1</span> 时 
-    <span class="highlight" id="minutes">0</span> 分
+    从 <time datetime="2021-10-24">2021 年 10 月 24 日</time> 起，我们一起走过了 
+    <span class="highlight" id="days">1163</span> 天 
+    <span class="highlight" id="hours">20</span> 时 
+    <span class="highlight" id="minutes">44</span> 分 
+    <span class="highlight" id="seconds">14</span> 秒
   </p>
 
   <p class="footer">
-    <span style="font-family: 'Dancing Script', cursive;">By Zsfan To DaiYuXuan</span>
+    <span style="font-family: 'Dancing Script', cursive;">Love Me Qian</span>
   </p>
 
   <canvas id="pinkboard"></canvas>
@@ -90,22 +91,24 @@
 
   <script>
     // 设置起始时间
-    const startDate = new Date('2025-02-10T14:05:52');
+    const startDate = new Date('2021-10-24T00:00:00');
 
     // 更新计时器函数
     function updateTimer() {
       const now = new Date();
       const elapsedTime = now - startDate;
 
-      // 计算天、时、分
+      // 计算天、时、分、秒
       const days = Math.floor(elapsedTime / (1000 * 60 * 60 * 24));
       const hours = Math.floor((elapsedTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
 
       // 更新页面内容
       document.getElementById('days').textContent = days;
       document.getElementById('hours').textContent = hours;
       document.getElementById('minutes').textContent = minutes;
+      document.getElementById('seconds').textContent = seconds;
 
       requestAnimationFrame(updateTimer);
     }
@@ -187,16 +190,13 @@
         this.age += deltaTime;
       };
 
-      Particle.prototype.draw = function(context) {
+      Particle.prototype.draw = function(context, image) {
         function ease(t) {
           return (--t) * t * t + 1;
         }
-        // 使用一个圆点代替粒子图像
-        context.beginPath();
-        context.arc(this.position.x, this.position.y, settings.particles.size * ease(this.age / settings.particles.duration), 0, Math.PI * 2);
-        context.fillStyle = "#ff77cc";
-        context.fill();
+        var size = image.width * ease(this.age / settings.particles.duration);
         context.globalAlpha = 1 - this.age / settings.particles.duration;
+        context.drawImage(image, this.position.x - size / 2, this.position.y - size / 2, size, size);
       };
       return Particle;
     })();
@@ -235,48 +235,90 @@
           if (firstActive == particles.length) firstActive = 0;
         }
       };
-      ParticlePool.prototype.draw = function(context) {
+      ParticlePool.prototype.draw = function(context, image) {
         var i;
         if (firstActive < firstFree) {
           for (i = firstActive; i < firstFree; i++)
-            particles[i].draw(context);
+            particles[i].draw(context, image);
         }
         if (firstFree < firstActive) {
           for (i = firstActive; i < particles.length; i++)
-            particles[i].draw(context);
+            particles[i].draw(context, image);
           for (i = 0; i < firstFree; i++)
-            particles[i].draw(context);
+            particles[i].draw(context, image);
         }
       };
       return ParticlePool;
     })();
 
-    var canvas = document.getElementById('pinkboard');
-    var context = canvas.getContext('2d');
-    var pool = new ParticlePool(settings.particles.length);
-    var lastTime = 0;
-    var deltaTime = 0;
+    (function(canvas) {
+      var context = canvas.getContext('2d'),
+          particles = new ParticlePool(settings.particles.length),
+          particleRate = settings.particles.length / settings.particles.duration,
+          time;
 
-    function loop(time) {
-      deltaTime = (time - lastTime) / 1000;
-      lastTime = time;
-      pool.update(deltaTime);
-      pool.draw(context);
-      requestAnimationFrame(loop);
-    }
+      function pointOnHeart(t) {
+        return new Point(
+            160 * Math.pow(Math.sin(t), 3),
+            130 * Math.cos(t) - 50 * Math.cos(2 * t) - 20 * Math.cos(3 * t) - 10 * Math.cos(4 * t) + 25
+        );
+      }
 
-    loop(0);
+      var image = (function() {
+        var canvas = document.createElement('canvas'),
+            context = canvas.getContext('2d');
+        canvas.width = settings.particles.size;
+        canvas.height = settings.particles.size;
+        function to(t) {
+          var point = pointOnHeart(t);
+          point.x = settings.particles.size / 2 + point.x * settings.particles.size / 350;
+          point.y = settings.particles.size / 2 - point.y * settings.particles.size / 350;
+          return point;
+        }
+        context.beginPath();
+        var t = -Math.PI;
+        var point = to(t);
+        context.moveTo(point.x, point.y);
+        while (t < Math.PI) {
+          t += 0.01;
+          point = to(t);
+          context.lineTo(point.x, point.y);
+        }
+        context.closePath();
+        context.fillStyle = '#ff30c5';
+        context.fill();
+        var image = new Image();
+        image.src = canvas.toDataURL();
+        return image;
+      })();
 
-    // 动态更改页面标题的表情符号
-    const emojis = ['❤️', '😚', '💋', '😘', '💖'];
-    let emojiIndex = 0;
-    
-    function changeTitle() {
-      document.title = '爱你每一天 ' + emojis[emojiIndex];
-      emojiIndex = (emojiIndex + 1) % emojis.length;
-    }
-    
-    setInterval(changeTitle, 1000);
+      function render() {
+        requestAnimationFrame(render);
+        var newTime = new Date().getTime() / 1000,
+            deltaTime = newTime - (time || newTime);
+        time = newTime;
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        var amount = particleRate * deltaTime;
+        for (var i = 0; i < amount; i++) {
+          var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
+          var dir = pos.clone().length(settings.particles.velocity);
+          particles.add(canvas.width / 2 + pos.x, canvas.height / 2 - pos.y, dir.x, -dir.y);
+        }
+        particles.update(deltaTime);
+        particles.draw(context, image);
+      }
+
+      function onResize() {
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+      }
+      window.onresize = onResize;
+
+      setTimeout(function() {
+        onResize();
+        render();
+      }, 10);
+    })(document.getElementById('pinkboard'));
   </script>
 </body>
 </html>
