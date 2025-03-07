@@ -118,5 +118,72 @@
     // 如果自动播放被阻止，监听用户点击页面来播放音乐
     document.body.addEventListener('click', playMusic);
   </script>
+
+  <script>
+    // 处理爱心飘动特效
+    (function() {
+      var canvas = document.getElementById("pinkboard"),
+          ctx = canvas.getContext("2d"),
+          width = window.innerWidth,
+          height = window.innerHeight,
+          hearts = [];
+
+      canvas.width = width;
+      canvas.height = height;
+
+      function Heart(x, y, size, speed) {
+        this.x = x;
+        this.y = y;
+        this.size = size;
+        this.speed = speed;
+        this.alpha = 1;
+      }
+
+      Heart.prototype.draw = function() {
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = "#ff69b4";
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.bezierCurveTo(this.x - this.size / 2, this.y - this.size / 1.5, this.x - this.size, this.y + this.size / 3, this.x, this.y + this.size);
+        ctx.bezierCurveTo(this.x + this.size, this.y + this.size / 3, this.x + this.size / 2, this.y - this.size / 1.5, this.x, this.y);
+        ctx.fill();
+      };
+
+      function update() {
+        ctx.clearRect(0, 0, width, height);
+        for (var i = 0; i < hearts.length; i++) {
+          hearts[i].y -= hearts[i].speed;
+          hearts[i].alpha -= 0.01;
+          if (hearts[i].alpha <= 0) {
+            hearts.splice(i, 1);
+            i--;
+          }
+        }
+      }
+
+      function draw() {
+        for (var i = 0; i < hearts.length; i++) {
+          hearts[i].draw();
+        }
+      }
+
+      function loop() {
+        update();
+        draw();
+        requestAnimationFrame(loop);
+      }
+
+      function createHeart(event) {
+        var x = event.clientX;
+        var y = event.clientY;
+        var size = Math.random() * 10 + 10;
+        var speed = Math.random() * 2 + 1;
+        hearts.push(new Heart(x, y, size, speed));
+      }
+
+      document.addEventListener("click", createHeart);
+      loop();
+    })();
+  </script>
 </body>
 </html>
