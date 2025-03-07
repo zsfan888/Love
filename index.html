@@ -7,42 +7,25 @@
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/mouse_slide.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/clicklove.js"></script>
-  <style type="text/css">
+  <style>
     html, body {
       height: 100%;
-      padding: 0;
       margin: 0;
       background: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
     }
     canvas {
       position: absolute;
       width: 100%;
       height: 100%;
     }
-    body {
-      font-family: 'Dancing Script', cursive;
-      color: white;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      z-index: 10;
-    }
-    .namebox {
-      color: #fff;
-      position: absolute;   
-      top: 50%;   
-      left: 50%;   
-      transform: translate(-50%, -50%);   
-    }
-    .namebox h1 {
-      margin: 0 auto;
-    }
     .message {
       font-size: 2.2em;
-      margin-top: 10px;
+      color: white;
       text-shadow: 1px 3px 5px rgba(0, 0, 0, 0.5);
       animation: fadeIn 2.5s ease-in-out;
     }
@@ -72,16 +55,13 @@
 </head>
 <body>
   <p class="message">
-    我们相爱了 
-    <span class="highlight" id="days">0</span> 天 
+    我们相爱了 <span class="highlight" id="days">0</span> 天 
     <span class="highlight" id="hours">0</span> 时 
     <span class="highlight" id="minutes">0</span> 分 
     <span class="highlight" id="seconds">0</span> 秒
   </p>
 
-  <p class="footer">
-    <span style="font-family: 'Dancing Script', cursive;">By ZSFan To 硕宝宝😘</span>
-  </p>
+  <p class="footer">By ZSFan To 硕宝宝😘</p>
 
   <canvas id="pinkboard"></canvas>
 
@@ -89,18 +69,20 @@
   <audio id="backgroundMusic" src="music.mp3" type="audio/mpeg" loop></audio>
 
   <script>
-    // 设置起始时间为 2025 年 2 月 10 日 14:05:52
+    // 设置相爱开始的时间（2025-02-10 14:05:52）
     const startDate = new Date('2025-02-10T14:05:52');
 
     function updateTimer() {
       const now = new Date();
       const elapsedTime = now - startDate;
 
+      // 计算天、时、分、秒
       const days = Math.floor(elapsedTime / (1000 * 60 * 60 * 24));
       const hours = Math.floor((elapsedTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
 
+      // 更新页面内容
       document.getElementById('days').textContent = days;
       document.getElementById('hours').textContent = hours;
       document.getElementById('minutes').textContent = minutes;
@@ -108,106 +90,65 @@
 
       requestAnimationFrame(updateTimer);
     }
-
     updateTimer();
 
+    // 播放音乐
     function playMusic() {
       const music = document.getElementById('backgroundMusic');
       music.play().catch(() => {
         console.log("自动播放被浏览器阻止，等待用户交互。");
       });
     }
-
-    playMusic();
     document.body.addEventListener('click', playMusic);
 
-    var settings = {
-      particles: {
-        length: 500,
-        duration: 2,
-        velocity: 100,
-        effect: -0.75,
-        size: 30,
-      },
-    };
+    // 生成爱心粒子动画
+    const canvas = document.getElementById('pinkboard');
+    const ctx = canvas.getContext('2d');
 
-    var Point = function(x, y) {
-      this.x = x || 0;
-      this.y = y || 0;
-    };
-    Point.prototype.clone = function() {
-      return new Point(this.x, this.y);
-    };
-    Point.prototype.length = function(length) {
-      if (length === undefined)
-        return Math.sqrt(this.x * this.x + this.y * this.y);
-      this.normalize();
-      this.x *= length;
-      this.y *= length;
-      return this;
-    };
-    Point.prototype.normalize = function() {
-      var length = this.length();
-      this.x /= length;
-      this.y /= length;
-      return this;
-    };
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
-    var Particle = function() {
-      this.position = new Point();
-      this.velocity = new Point();
-      this.acceleration = new Point();
-      this.age = 0;
-    };
-    Particle.prototype.initialize = function(x, y, dx, dy) {
-      this.position.x = x;
-      this.position.y = y;
-      this.velocity.x = dx;
-      this.velocity.y = dy;
-      this.acceleration.x = dx * settings.particles.effect;
-      this.acceleration.y = dy * settings.particles.effect;
-      this.age = 0;
-    };
+    function pointOnHeart(t) {
+      return {
+        x: 16 * Math.pow(Math.sin(t), 3),
+        y: -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t))
+      };
+    }
 
-    (function(canvas) {
-      var context = canvas.getContext('2d'),
-          particles = new Array(settings.particles.length),
-          particleRate = settings.particles.length / settings.particles.duration,
-          time;
+    let particles = [];
 
-      function pointOnHeart(t) {
-        return new Point(
-            160 * Math.pow(Math.sin(t), 3),
-            130 * Math.cos(t) - 50 * Math.cos(2 * t) - 20 * Math.cos(3 * t) - 10 * Math.cos(4 * t) + 25
-        );
+    function createParticles() {
+      particles = [];
+      for (let i = 0; i < 300; i++) {
+        const t = Math.random() * Math.PI * 2;
+        const pos = pointOnHeart(t);
+        particles.push({
+          x: canvas.width / 2 + pos.x * 15,
+          y: canvas.height / 2 + pos.y * 15,
+          size: Math.random() * 3 + 1,
+          alpha: Math.random() * 0.5 + 0.5
+        });
       }
+    }
 
-      function render() {
-        requestAnimationFrame(render);
-        var newTime = new Date().getTime() / 1000,
-            deltaTime = newTime - (time || newTime);
-        time = newTime;
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        for (var i = 0; i < particleRate * deltaTime; i++) {
-          var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
-          var dir = pos.clone().length(settings.particles.velocity);
-          context.fillStyle = '#ff30c5';
-          context.beginPath();
-          context.arc(canvas.width / 2 + pos.x, canvas.height / 2 - pos.y, 2, 0, Math.PI * 2);
-          context.fill();
-        }
-      }
+    function drawParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgba(255, 50, 150, 0.8)";
+      particles.forEach(p => {
+        ctx.globalAlpha = p.alpha;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      requestAnimationFrame(drawParticles);
+    }
 
-      function onResize() {
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
-      }
-      window.onresize = onResize;
-      setTimeout(function() {
-        onResize();
-        render();
-      }, 10);
-    })(document.getElementById('pinkboard'));
+    createParticles();
+    drawParticles();
   </script>
 </body>
 </html>
