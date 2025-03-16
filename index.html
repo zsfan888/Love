@@ -1,154 +1,341 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>爱你每一天</title>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/mouse_slide.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/clicklove.js"></script>
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      background: #000;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-    }
-    canvas {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-    }
-    .message {
-      font-size: 2.2em;
-      color: white;
-      text-shadow: 1px 3px 5px rgba(0, 0, 0, 0.5);
-      animation: fadeIn 2.5s ease-in-out;
-    }
-    .highlight {
-      color: #ffdd94;
-      font-weight: bold;
-    }
-    .footer {
-      position: absolute;
-      bottom: 20px;
-      font-size: 2.5em;
-      color: rgba(255, 255, 255, 0.8);
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-      animation: fadeIn 3s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>😘爱你每一天❤️</title>
+    <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/mouse_slide.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/clicklove.js"></script>
+    <style type="text/css">
+      html,
+      body {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        background: #000;
       }
-      to {
-        opacity: 1;
-        transform: translateY(0);
+      canvas {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
       }
-    }
-  </style>
-</head>
-<body>
-  <p class="message">
-    我们相爱了 <span class="highlight" id="days">0</span> 天 
-    <span class="highlight" id="hours">0</span> 时 
-    <span class="highlight" id="minutes">0</span> 分 
-    <span class="highlight" id="seconds">0</span> 秒
-  </p>
-
-  <p class="footer">By ZSFan To 硕宝宝😘</p>
-
-  <canvas id="pinkboard"></canvas>
-
-  <!-- 背景音乐 -->
-  <audio id="backgroundMusic" src="music.mp3" type="audio/mpeg" loop></audio>
-
-  <script>
-    // 设置相爱开始的时间（2025-02-10 14:05:52）
-    const startDate = new Date('2025-02-10T14:05:52');
-
-    function updateTimer() {
-      const now = new Date();
-      const elapsedTime = now - startDate;
-
-      // 计算天、时、分、秒
-      const days = Math.floor(elapsedTime / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((elapsedTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
-
-      // 更新页面内容
-      document.getElementById('days').textContent = days;
-      document.getElementById('hours').textContent = hours;
-      document.getElementById('minutes').textContent = minutes;
-      document.getElementById('seconds').textContent = seconds;
-
-      requestAnimationFrame(updateTimer);
-    }
-    updateTimer();
-
-    // 播放音乐
-    function playMusic() {
-      const music = document.getElementById('backgroundMusic');
-      music.play().catch(() => {
-        console.log("自动播放被浏览器阻止，等待用户交互。");
-      });
-    }
-    document.body.addEventListener('click', playMusic);
-
-    // 生成爱心粒子动画
-    const canvas = document.getElementById('pinkboard');
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    function pointOnHeart(t) {
-      return {
-        x: 16 * Math.pow(Math.sin(t), 3),
-        y: -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t))
-      };
-    }
-
-    let particles = [];
-
-    function createParticles() {
-      particles = [];
-      for (let i = 0; i < 300; i++) {
-        const t = Math.random() * Math.PI * 2;
-        const pos = pointOnHeart(t);
-        particles.push({
-          x: canvas.width / 2 + pos.x * 15,
-          y: canvas.height / 2 + pos.y * 15,
-          size: Math.random() * 3 + 1,
-          alpha: Math.random() * 0.5 + 0.5
+      /* Center the fixed text inside the heart effect */
+      .namebox {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 16px; /* smaller font size */
+        line-height: 1.2;
+        z-index: 1;
+        max-width: 300px;
+        word-wrap: break-word;
+      }
+      .footer {
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+        text-align: center;
+        font-size: 20px;
+        color: #fff;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="pinkboard"></canvas>
+    <!-- Audio element for playing music (file name: music.mp3) -->
+    <audio id="backgroundMusic" src="music.mp3" type="audio/mpeg"></audio>
+    <script>
+      // Play music after user clicks anywhere on the page.
+      document.addEventListener("click", function () {
+        var music = document.getElementById("backgroundMusic");
+        music.play().catch(function (error) {
+          console.log("Music playback failed:", error);
         });
-      }
-    }
-
-    function drawParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "rgba(255, 50, 150, 0.8)";
-      particles.forEach(p => {
-        ctx.globalAlpha = p.alpha;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
       });
-      requestAnimationFrame(drawParticles);
-    }
 
-    createParticles();
-    drawParticles();
-  </script>
-</body>
+      var settings = {
+        particles: {
+          length: 500, // maximum amount of particles
+          duration: 2, // particle duration in sec
+          velocity: 100, // particle velocity in pixels/sec
+          effect: -0.75, // play with this for a nice effect
+          size: 30, // particle size in pixels
+        },
+      };
+
+      (function () {
+        var b = 0;
+        var c = ["ms", "moz", "webkit", "o"];
+        for (var a = 0; a < c.length && !window.requestAnimationFrame; ++a) {
+          window.requestAnimationFrame = window[c[a] + "RequestAnimationFrame"];
+          window.cancelAnimationFrame =
+            window[c[a] + "CancelAnimationFrame"] ||
+            window[c[a] + "CancelRequestAnimationFrame"];
+        }
+        if (!window.requestAnimationFrame) {
+          window.requestAnimationFrame = function (h, e) {
+            var d = new Date().getTime();
+            var f = Math.max(0, 16 - (d - b));
+            var g = window.setTimeout(function () {
+              h(d + f);
+            }, f);
+            b = d + f;
+            return g;
+          };
+        }
+        if (!window.cancelAnimationFrame) {
+          window.cancelAnimationFrame = function (d) {
+            clearTimeout(d);
+          };
+        }
+      })();
+
+      var Point = (function () {
+        function Point(x, y) {
+          this.x = typeof x !== "undefined" ? x : 0;
+          this.y = typeof y !== "undefined" ? y : 0;
+        }
+        Point.prototype.clone = function () {
+          return new Point(this.x, this.y);
+        };
+        Point.prototype.length = function (length) {
+          if (typeof length === "undefined")
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+          this.normalize();
+          this.x *= length;
+          this.y *= length;
+          return this;
+        };
+        Point.prototype.normalize = function () {
+          var len = this.length();
+          this.x /= len;
+          this.y /= len;
+          return this;
+        };
+        return Point;
+      })();
+
+      var Particle = (function () {
+        function Particle() {
+          this.position = new Point();
+          this.velocity = new Point();
+          this.acceleration = new Point();
+          this.age = 0;
+        }
+        Particle.prototype.initialize = function (x, y, dx, dy) {
+          this.position.x = x;
+          this.position.y = y;
+          this.velocity.x = dx;
+          this.velocity.y = dy;
+          this.acceleration.x = dx * settings.particles.effect;
+          this.acceleration.y = dy * settings.particles.effect;
+          this.age = 0;
+        };
+        Particle.prototype.update = function (deltaTime) {
+          this.position.x += this.velocity.x * deltaTime;
+          this.position.y += this.velocity.y * deltaTime;
+          this.velocity.x += this.acceleration.x * deltaTime;
+          this.velocity.y += this.acceleration.y * deltaTime;
+          this.age += deltaTime;
+        };
+        Particle.prototype.draw = function (context, image) {
+          function ease(t) {
+            return --t * t * t + 1;
+          }
+          var size = image.width * ease(this.age / settings.particles.duration);
+          context.globalAlpha = 1 - this.age / settings.particles.duration;
+          context.drawImage(
+            image,
+            this.position.x - size / 2,
+            this.position.y - size / 2,
+            size,
+            size
+          );
+        };
+        return Particle;
+      })();
+
+      /* ParticlePool class */
+      var ParticlePool = (function () {
+        var particles,
+          firstActive = 0,
+          firstFree = 0,
+          duration = settings.particles.duration;
+        function ParticlePool(length) {
+          // Create and populate particle pool.
+          particles = new Array(length);
+          for (var i = 0; i < particles.length; i++) {
+            particles[i] = new Particle();
+          }
+        }
+        ParticlePool.prototype.add = function (x, y, dx, dy) {
+          particles[firstFree].initialize(x, y, dx, dy);
+          // Handle circular queue.
+          firstFree++;
+          if (firstFree == particles.length) firstFree = 0;
+          if (firstActive == firstFree) firstActive++;
+          if (firstActive == particles.length) firstActive = 0;
+        };
+        ParticlePool.prototype.update = function (deltaTime) {
+          var i;
+          // Update active particles.
+          if (firstActive < firstFree) {
+            for (i = firstActive; i < firstFree; i++) {
+              particles[i].update(deltaTime);
+            }
+          }
+          if (firstFree < firstActive) {
+            for (i = firstActive; i < particles.length; i++) {
+              particles[i].update(deltaTime);
+            }
+            for (i = 0; i < firstFree; i++) {
+              particles[i].update(deltaTime);
+            }
+          }
+          // Remove inactive particles.
+          while (
+            particles[firstActive].age >= duration &&
+            firstActive != firstFree
+          ) {
+            firstActive++;
+            if (firstActive == particles.length) firstActive = 0;
+          }
+        };
+        ParticlePool.prototype.draw = function (context, image) {
+          var i;
+          // Draw active particles.
+          if (firstActive < firstFree) {
+            for (i = firstActive; i < firstFree; i++) {
+              particles[i].draw(context, image);
+            }
+          }
+          if (firstFree < firstActive) {
+            for (i = firstActive; i < particles.length; i++) {
+              particles[i].draw(context, image);
+            }
+            for (i = 0; i < firstFree; i++) {
+              particles[i].draw(context, image);
+            }
+          }
+        };
+        return ParticlePool;
+      })();
+
+      /* Putting it all together */
+      (function (canvas) {
+        var context = canvas.getContext("2d"),
+          particles = new ParticlePool(settings.particles.length),
+          particleRate = settings.particles.length / settings.particles.duration,
+          time;
+          
+        // Get the point on the heart with -PI <= t <= PI.
+        function pointOnHeart(t) {
+          return new Point(
+            160 * Math.pow(Math.sin(t), 3),
+            130 * Math.cos(t) -
+              50 * Math.cos(2 * t) -
+              20 * Math.cos(3 * t) -
+              10 * Math.cos(4 * t) +
+              25
+          );
+        }
+        
+        // Create the particle image using a dummy canvas.
+        var image = (function () {
+          var canvas = document.createElement("canvas"),
+            context = canvas.getContext("2d");
+          canvas.width = settings.particles.size;
+          canvas.height = settings.particles.size;
+          // Helper function to create the path.
+          function to(t) {
+            var point = pointOnHeart(t);
+            point.x = settings.particles.size / 2 + (point.x * settings.particles.size) / 350;
+            point.y = settings.particles.size / 2 - (point.y * settings.particles.size) / 350;
+            return point;
+          }
+          // Create the path.
+          context.beginPath();
+          var t = -Math.PI;
+          var point = to(t);
+          context.moveTo(point.x, point.y);
+          while (t < Math.PI) {
+            t += 0.01;
+            point = to(t);
+            context.lineTo(point.x, point.y);
+          }
+          context.closePath();
+          // Create the fill.
+          context.fillStyle = "#ff30c5";
+          context.fill();
+          // Create the image.
+          var image = new Image();
+          image.src = canvas.toDataURL();
+          return image;
+        })();
+        
+        // Render the animation.
+        function render() {
+          requestAnimationFrame(render);
+          var newTime = new Date().getTime() / 1000,
+            deltaTime = newTime - (time || newTime);
+          time = newTime;
+          context.clearRect(0, 0, canvas.width, canvas.height);
+          var amount = particleRate * deltaTime;
+          for (var i = 0; i < amount; i++) {
+            var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
+            var dir = pos.clone().length(settings.particles.velocity);
+            particles.add(
+              canvas.width / 2 + pos.x,
+              canvas.height / 2 - pos.y,
+              dir.x,
+              -dir.y
+            );
+          }
+          particles.update(deltaTime);
+          particles.draw(context, image);
+        }
+        
+        function onResize() {
+          canvas.width = canvas.clientWidth;
+          canvas.height = canvas.clientHeight;
+        }
+        window.onresize = onResize;
+        setTimeout(function () {
+          onResize();
+          render();
+        }, 10);
+      })(document.getElementById("pinkboard"));
+    </script>
+    <div class="namebox">
+      <p>承蒙你的出现，够我喜欢好多年，我希望，以后你能用我的名字拒绝所有人💕💕</p>
+    </div>
+    <div class="footer">By 凡 To 硕宝宝😘</div>
+    <script>
+      // Real-time update of the webpage title showing the love timer.
+      function updateLoveTimer() {
+        var startDate = new Date("2025-02-10T14:05:00");
+        var now = new Date();
+        var diff = now - startDate;
+        var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        document.title =
+          "😘爱你每一天❤️  我们已经相爱了 " +
+          days +
+          " 天 " +
+          hours +
+          " 时 " +
+          minutes +
+          " 分";
+        requestAnimationFrame(updateLoveTimer);
+      }
+      updateLoveTimer();
+    </script>
+  </body>
 </html>
