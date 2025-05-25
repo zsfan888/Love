@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>我爱你(˘³˘)</title>
     <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/mouse_slide.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/zyoushuo/Blog/hexo/js/clicklove.js"></script>
     <style type="text/css">
@@ -15,7 +16,8 @@
         height: 100%;
         padding: 0;
         margin: 0;
-        background: #000;
+        background: url('https://img.eyabc.cn/images/2025/05/26/buy4vt.jpg') no-repeat center center fixed;
+        background-size: cover;
         font-family: 'Noto Sans SC', sans-serif;
       }
       canvas {
@@ -32,10 +34,10 @@
         transform: translate(-50%, -50%);
         text-align: center;
         color: rgba(255, 255, 255, 0.8);
-        font-size: 16px;
-        line-height: 1.2;
+        font-size: 24px;
+        line-height: 1.4;
         z-index: 1;
-        max-width: 300px;
+        max-width: 400px;
         word-wrap: break-word;
         font-family: 'Pacifico', cursive;
       }
@@ -294,21 +296,29 @@
         }, 10);
       })(document.getElementById("pinkboard"));
     </script>
-    <div class="namebox">
-      <p>承蒙你的出现，够我喜欢好多年，我希望，以后你能用我的名字拒绝所有人💕💕</p>
+    <div class="namebox" id="loveTimer">
+      <!-- 计时器内容将在这里显示 -->
     </div>
-    <div class="footer">By 凡 To 硕宝宝😘</div>
+    <div class="footer">By Fan To 硕宝宝😘</div>
     <script>
-      // Update the webpage title to show only the time prefixed by "我们已经相爱了"
+      // Update the love timer display
       function updateLoveTimer() {
-        var startDate = new Date("2025-02-10T14:05:00");
+        var startDate = new Date("2025-02-10T13:14:52");
         var now = new Date();
         var diff = now - startDate;
         var days = Math.floor(diff / (1000 * 60 * 60 * 24));
         var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        document.title = "我们已经相爱了 " + days + " 天 " + hours + " 时 " + minutes + " 分";
-        requestAnimationFrame(updateLoveTimer);
+        var seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        document.getElementById("loveTimer").innerHTML = 
+          "我们已经相爱了<br>" + 
+          days + " 天 " + 
+          hours + " 时 " + 
+          minutes + " 分 " + 
+          seconds + " 秒";
+        
+        setTimeout(updateLoveTimer, 1000);
       }
       updateLoveTimer();
     </script>
